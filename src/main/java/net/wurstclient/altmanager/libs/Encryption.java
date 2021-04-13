@@ -37,11 +37,11 @@ public final class Encryption
     public Encryption(Path encFolder)
     {
         KeyPair rsaKeyPair =
-                getRsaKeyPair(encFolder.resolve("wurst_rsa_public.txt"),
-                        encFolder.resolve("wurst_rsa_private.txt"));
+                getRsaKeyPair(encFolder.resolve("wi_rsa_public.txt"),
+                        encFolder.resolve("wi_rsa_private.txt"));
 
         SecretKey aesKey =
-                getAesKey(encFolder.resolve("wurst_aes.txt"), rsaKeyPair);
+                getAesKey(encFolder.resolve("wi_aes.txt"), rsaKeyPair);
 
         try
         {
