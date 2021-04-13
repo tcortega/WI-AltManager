@@ -1,29 +1,42 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "wi_altmanager",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "WI AltManager",
+  "description": "The altmanager from the Wurst Client as a standalone mod.",
   "authors": [
-    "Me!"
+  	{
+      "name": "Alexander01998",
+      "contact": {
+        "homepage": "https://www.wurstimperium.net/",
+        "email": "contact.wurstimperium@gmail.com",
+        "twitter": "https://twitter.com/Wurst_Imperium"
+      }
+    }, 
+    {
+      "name": "tcortega",
+      "contact": {
+        "homepage": "https://github.com/tcortega"
+      }
+    }
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "GPL-3.0-or-later",
+  "icon": "assets/wi_altmanager/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "net.wurstclient.altmanager.WiAltManagerInitializer"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "wi-altmanager.mixins.json"
   ],
 
   "depends": {
@@ -31,7 +44,7 @@
     "fabric": "*",
     "minecraft": "1.16.x"
   },
-  "suggests": {
-    "another-mod": "*"
+  "breaks": {
+    "wurst": "*"
   }
 }
