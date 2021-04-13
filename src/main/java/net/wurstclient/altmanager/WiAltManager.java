@@ -63,7 +63,7 @@ public enum WiAltManager {
 		}catch(IOException e)
 		{
 			throw new RuntimeException(
-					"Couldn't create '.Wurst encryption' folder.", e);
+					"Couldn't create '.WI encryption' folder.", e);
 		}
 
 		return encFolder;
