@@ -1,9 +1,15 @@
-# Fabric Example Mod
+# WI Alt Manager (Wurst-Imperium Alt Manager)
 
-## Setup
+The alt manager from the [Wurst Client](https://www.wurstclient.net/) as a standalone mod.
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+## Features
 
-## License
+- Change account while in game!
+- Import your accounts!
+- Export your accounts!
+- Directly login into accounts!
+- Support for cracked account logins!
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+## Downloads
+
+Coming soon!
