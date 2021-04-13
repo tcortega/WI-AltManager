@@ -55,7 +55,7 @@ public enum WiAltManager {
 					+ "If someone is asking you to send these files, they are 100% trying to scam you.\r\n"
 					+ "\r\n"
 					+ "DO NOT EDIT, RENAME OR DELETE THESE FILES! (unless you know what you're doing)\r\n"
-					+ "If you do, Wurst's Alt Manager can no longer read your alt list and will replace it with a blank one.\r\n"
+					+ "If you do, WI's Alt Manager can no longer read your alt list and will replace it with a blank one.\r\n"
 					+ "In other words, YOUR ALT LIST WILL BE DELETED.";
 			Files.write(readme, readmeText.getBytes("UTF-8"),
 					StandardOpenOption.CREATE);
