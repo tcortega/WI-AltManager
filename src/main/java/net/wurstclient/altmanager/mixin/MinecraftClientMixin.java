@@ -35,7 +35,7 @@ public abstract class MinecraftClientMixin
             cancellable = true)
     private void onGetSession(CallbackInfoReturnable<Session> cir)
     {
-        if(altManagerSession == null)
+        if (altManagerSession == null)
             return;
 
         cir.setReturnValue(altManagerSession);
@@ -49,7 +49,7 @@ public abstract class MinecraftClientMixin
                     "getSessionProperties()Lcom/mojang/authlib/properties/PropertyMap;"})
     private Session getSessionForSessionProperties(MinecraftClient mc)
     {
-        if(altManagerSession != null)
+        if (altManagerSession != null)
             return altManagerSession;
         else
             return session;

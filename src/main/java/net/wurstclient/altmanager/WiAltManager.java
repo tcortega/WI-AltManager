@@ -14,86 +14,88 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-public enum WiAltManager {
-	INSTANCE;
+public enum WiAltManager
+{
+    INSTANCE;
 
-	public static final MinecraftClient MC = MinecraftClient.getInstance();
-	public static final IMinecraftClient IMC = (IMinecraftClient)MC;
+    public static final MinecraftClient MC = MinecraftClient.getInstance();
+    public static final IMinecraftClient IMC = (IMinecraftClient) MC;
 
-	private AltManager altManager;
-	private Path altManagerFolder;
+    private AltManager altManager;
+    private Path altManagerFolder;
 
-	public void initialize() {
-		FabricLoader fabricLoader = FabricLoader.getInstance();
-		ModContainer modContainter = fabricLoader.getModContainer("wi_altmanager").get();
-		Version version = modContainter.getMetadata().getVersion();
+    public void initialize()
+    {
+        FabricLoader fabricLoader = FabricLoader.getInstance();
+        ModContainer modContainter = fabricLoader.getModContainer("wi_altmanager").get();
+        Version version = modContainter.getMetadata().getVersion();
 
-		altManagerFolder = createAltManagerFolder();
+        altManagerFolder = createAltManagerFolder();
 
-		Path altsFile = altManagerFolder.resolve("alts.encrypted_json");
-		Path encFolder = createEncryptionFolder();
-		altManager = new AltManager(altsFile, encFolder);
+        Path altsFile = altManagerFolder.resolve("alts.encrypted_json");
+        Path encFolder = createEncryptionFolder();
+        altManager = new AltManager(altsFile, encFolder);
 
-		System.out.println("Starting WI AltManager v" + version.getFriendlyString());
-	}
+        System.out.println("Starting WI AltManager v" + version.getFriendlyString());
+    }
 
-	private Path createEncryptionFolder()
-	{
-		Path encFolder =
-				Paths.get(System.getProperty("user.home"), ".WI encryption")
-						.normalize();
+    private Path createEncryptionFolder()
+    {
+        Path encFolder =
+                Paths.get(System.getProperty("user.home"), ".WI encryption")
+                        .normalize();
 
-		try
-		{
-			Files.createDirectories(encFolder);
-			if(Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS)
-				Files.setAttribute(encFolder, "dos:hidden", true);
+        try
+        {
+            Files.createDirectories(encFolder);
+            if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS)
+                Files.setAttribute(encFolder, "dos:hidden", true);
 
-			Path readme = encFolder.resolve("READ ME I AM VERY IMPORTANT.txt");
-			String readmeText = "DO NOT SHARE THESE FILES WITH ANYONE!\r\n"
-					+ "They are encryption keys that protect your alt list file from being read by someone else.\r\n"
-					+ "If someone is asking you to send these files, they are 100% trying to scam you.\r\n"
-					+ "\r\n"
-					+ "DO NOT EDIT, RENAME OR DELETE THESE FILES! (unless you know what you're doing)\r\n"
-					+ "If you do, WI's Alt Manager can no longer read your alt list and will replace it with a blank one.\r\n"
-					+ "In other words, YOUR ALT LIST WILL BE DELETED.";
-			Files.write(readme, readmeText.getBytes("UTF-8"),
-					StandardOpenOption.CREATE);
+            Path readme = encFolder.resolve("READ ME I AM VERY IMPORTANT.txt");
+            String readmeText = "DO NOT SHARE THESE FILES WITH ANYONE!\r\n"
+                    + "They are encryption keys that protect your alt list file from being read by someone else.\r\n"
+                    + "If someone is asking you to send these files, they are 100% trying to scam you.\r\n"
+                    + "\r\n"
+                    + "DO NOT EDIT, RENAME OR DELETE THESE FILES! (unless you know what you're doing)\r\n"
+                    + "If you do, WI's Alt Manager can no longer read your alt list and will replace it with a blank one.\r\n"
+                    + "In other words, YOUR ALT LIST WILL BE DELETED.";
+            Files.write(readme, readmeText.getBytes("UTF-8"),
+                    StandardOpenOption.CREATE);
 
-		}catch(IOException e)
-		{
-			throw new RuntimeException(
-					"Couldn't create '.WI encryption' folder.", e);
-		}
+        } catch (IOException e)
+        {
+            throw new RuntimeException(
+                    "Couldn't create '.WI encryption' folder.", e);
+        }
 
-		return encFolder;
-	}
+        return encFolder;
+    }
 
-	private Path createAltManagerFolder()
-	{
-		Path dotMinecraftFolder = MC.runDirectory.toPath().normalize();
-		Path altManagerFolder = dotMinecraftFolder.resolve("altmanager");
+    private Path createAltManagerFolder()
+    {
+        Path dotMinecraftFolder = MC.runDirectory.toPath().normalize();
+        Path altManagerFolder = dotMinecraftFolder.resolve("altmanager");
 
-		try
-		{
-			Files.createDirectories(altManagerFolder);
+        try
+        {
+            Files.createDirectories(altManagerFolder);
 
-		}catch(IOException e)
-		{
-			throw new RuntimeException(
-					"Couldn't create .minecraft/altManager folder.", e);
-		}
+        } catch (IOException e)
+        {
+            throw new RuntimeException(
+                    "Couldn't create .minecraft/altManager folder.", e);
+        }
 
-		return altManagerFolder;
-	}
+        return altManagerFolder;
+    }
 
-	public Path getAltManagerFolder()
-	{
-		return altManagerFolder;
-	}
+    public Path getAltManagerFolder()
+    {
+        return altManagerFolder;
+    }
 
-	public AltManager getAltManager()
-	{
-		return altManager;
-	}
+    public AltManager getAltManager()
+    {
+        return altManager;
+    }
 }

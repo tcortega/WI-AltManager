@@ -60,7 +60,7 @@ public final class AltManagerScreen extends Screen
     {
         listGui = new ListGui(client, this, altManager.getList());
 
-        if(altManager.getList().isEmpty() && shouldAsk)
+        if (altManager.getList().isEmpty() && shouldAsk)
             client.openScreen(new ConfirmScreen(this::confirmGenerate,
                     new LiteralText("Your alt list is empty."), new LiteralText(
                     "Would you like some random alts to get started?")));
@@ -100,8 +100,8 @@ public final class AltManagerScreen extends Screen
     {
         listGui.mouseClicked(mouseX, mouseY, mouseButton);
 
-        if(mouseY >= 36 && mouseY <= height - 57)
-            if(mouseX >= width / 2 + 140 || mouseX <= width / 2 - 126)
+        if (mouseY >= 36 && mouseY <= height - 57)
+            if (mouseX >= width / 2 + 140 || mouseX <= width / 2 - 126)
                 listGui.selected = -1;
 
         return super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -132,7 +132,7 @@ public final class AltManagerScreen extends Screen
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
-        if(keyCode == GLFW.GLFW_KEY_ENTER)
+        if (keyCode == GLFW.GLFW_KEY_ENTER)
             useButton.onPress();
 
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -157,10 +157,10 @@ public final class AltManagerScreen extends Screen
     private void pressLogin()
     {
         Alt alt = listGui.getSelectedAlt();
-        if(alt == null)
+        if (alt == null)
             return;
 
-        if(alt.isCracked())
+        if (alt.isCracked())
         {
             LoginManager.changeCrackedName(alt.getEmail());
             client.openScreen(prevScreen);
@@ -169,7 +169,7 @@ public final class AltManagerScreen extends Screen
 
         String error = LoginManager.login(alt.getEmail(), alt.getPassword());
 
-        if(!error.isEmpty())
+        if (!error.isEmpty())
         {
             errorTimer = 8;
             return;
@@ -183,7 +183,7 @@ public final class AltManagerScreen extends Screen
     private void pressFavorite()
     {
         Alt alt = listGui.getSelectedAlt();
-        if(alt == null)
+        if (alt == null)
             return;
 
         altManager.setStarred(listGui.selected, !alt.isStarred());
@@ -193,7 +193,7 @@ public final class AltManagerScreen extends Screen
     private void pressEdit()
     {
         Alt alt = listGui.getSelectedAlt();
-        if(alt == null)
+        if (alt == null)
             return;
 
         client.openScreen(new EditAltScreen(this, altManager, alt));
@@ -202,7 +202,7 @@ public final class AltManagerScreen extends Screen
     private void pressDelete()
     {
         Alt alt = listGui.getSelectedAlt();
-        if(alt == null)
+        if (alt == null)
             return;
 
         LiteralText text =
@@ -228,12 +228,12 @@ public final class AltManagerScreen extends Screen
             Path path = getFileChooserPath(process);
             process.waitFor();
 
-            if(path.getFileName().toString().endsWith(".json"))
+            if (path.getFileName().toString().endsWith(".json"))
                 importAsJSON(path);
             else
                 importAsTXT(path);
 
-        }catch(IOException | InterruptedException | JsonException e)
+        } catch (IOException | InterruptedException | JsonException e)
         {
             e.printStackTrace();
         }
@@ -251,11 +251,11 @@ public final class AltManagerScreen extends Screen
         List<String> lines = Files.readAllLines(path);
         ArrayList<Alt> alts = new ArrayList<>();
 
-        for(String line : lines)
+        for (String line : lines)
         {
             String[] data = line.split(":");
 
-            switch(data.length)
+            switch (data.length)
             {
                 case 1:
                     alts.add(new Alt(data[0], null, null));
@@ -282,12 +282,12 @@ public final class AltManagerScreen extends Screen
 
             process.waitFor();
 
-            if(path.getFileName().toString().endsWith(".json"))
+            if (path.getFileName().toString().endsWith(".json"))
                 exportAsJSON(path);
             else
                 exportAsTXT(path);
 
-        }catch(IOException | InterruptedException | JsonException e)
+        } catch (IOException | InterruptedException | JsonException e)
         {
             e.printStackTrace();
         }
@@ -295,20 +295,20 @@ public final class AltManagerScreen extends Screen
 
     private Path getFileChooserPath(Process process) throws IOException
     {
-        try(BufferedReader bf =
-                    new BufferedReader(new InputStreamReader(process.getInputStream(),
-                            StandardCharsets.UTF_8)))
+        try (BufferedReader bf =
+                     new BufferedReader(new InputStreamReader(process.getInputStream(),
+                             StandardCharsets.UTF_8)))
         {
             String response = bf.readLine();
 
-            if(response == null)
+            if (response == null)
                 throw new IOException("No reponse from FileChooser");
 
             try
             {
                 return Paths.get(response);
 
-            }catch(InvalidPathException e)
+            } catch (InvalidPathException e)
             {
                 throw new IOException(
                         "Reponse from FileChooser is not a valid path");
@@ -326,8 +326,8 @@ public final class AltManagerScreen extends Screen
     {
         List<String> lines = new ArrayList<>();
 
-        for(Alt alt : altManager.getList())
-            if(alt.isCracked())
+        for (Alt alt : altManager.getList())
+            if (alt.isCracked())
                 lines.add(alt.getEmail());
             else
                 lines.add(alt.getEmail() + ":" + alt.getPassword());
@@ -337,10 +337,10 @@ public final class AltManagerScreen extends Screen
 
     private void confirmGenerate(boolean confirmed)
     {
-        if(confirmed)
+        if (confirmed)
         {
             ArrayList<Alt> alts = new ArrayList<>();
-            for(int i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
                 alts.add(new Alt(NameGenerator.generateName(), null, null));
 
             altManager.addAll(alts);
@@ -352,7 +352,7 @@ public final class AltManagerScreen extends Screen
 
     private void confirmRemove(boolean confirmed)
     {
-        if(confirmed)
+        if (confirmed)
             altManager.remove(listGui.selected);
 
         client.openScreen(this);
@@ -366,11 +366,11 @@ public final class AltManagerScreen extends Screen
         listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 
         // skin preview
-        if(listGui.getSelectedSlot() != -1
+        if (listGui.getSelectedSlot() != -1
                 && listGui.getSelectedSlot() < altManager.getList().size())
         {
             Alt alt = listGui.getSelectedAlt();
-            if(alt == null)
+            if (alt == null)
                 return;
 
             AltRenderer.drawAltBack(matrixStack, alt.getNameOrEmail(),
@@ -391,7 +391,7 @@ public final class AltManagerScreen extends Screen
                 width / 2, 24, 10526880);
 
         // red flash for errors
-        if(errorTimer > 0)
+        if (errorTimer > 0)
         {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_CULL_FACE);
@@ -421,17 +421,17 @@ public final class AltManagerScreen extends Screen
     private void renderButtonTooltip(MatrixStack matrixStack, int mouseX,
                                      int mouseY)
     {
-        for(AbstractButtonWidget button : buttons)
+        for (AbstractButtonWidget button : buttons)
         {
-            if(!button.isHovered())
+            if (!button.isHovered())
                 continue;
 
-            if(button != importButton && button != exportButton)
+            if (button != importButton && button != exportButton)
                 continue;
 
             ArrayList<Text> tooltip = new ArrayList<>();
             tooltip.add(new LiteralText("This button opens another window."));
-            if(client.options.fullscreen)
+            if (client.options.fullscreen)
                 tooltip
                         .add(new LiteralText("\u00a7cTurn off fullscreen mode!"));
             else
@@ -473,7 +473,7 @@ public final class AltManagerScreen extends Screen
 
         protected Alt getSelectedAlt()
         {
-            if(selected < 0 || selected >= list.size())
+            if (selected < 0 || selected >= list.size())
                 return null;
 
             return list.get(selected);
@@ -489,7 +489,7 @@ public final class AltManagerScreen extends Screen
         protected boolean selectItem(int index, int button, double mouseX,
                                      double mouseY)
         {
-            if(index >= 0 && index < list.size())
+            if (index >= 0 && index < list.size())
                 selected = index;
 
             return true;
@@ -508,7 +508,7 @@ public final class AltManagerScreen extends Screen
             Alt alt = list.get(id);
 
             // green glow when logged in
-            if(client.getSession().getUsername().equals(alt.getName()))
+            if (client.getSession().getUsername().equals(alt.getName()))
             {
                 GL11.glDisable(GL11.GL_TEXTURE_2D);
                 GL11.glDisable(GL11.GL_CULL_FACE);
@@ -516,7 +516,7 @@ public final class AltManagerScreen extends Screen
 
                 float opacity =
                         0.3F - Math.abs(MathHelper.sin(System.currentTimeMillis()
-                                % 10000L / 10000F * (float)Math.PI * 2.0F) * 0.15F);
+                                % 10000L / 10000F * (float) Math.PI * 2.0F) * 0.15F);
 
                 GL11.glColor4f(0, 1, 0, opacity);
 
@@ -544,9 +544,9 @@ public final class AltManagerScreen extends Screen
 
             // tags
             String tags = alt.isCracked() ? "\u00a78cracked" : "\u00a72premium";
-            if(alt.isStarred())
+            if (alt.isStarred())
                 tags += "\u00a7r, \u00a7efavorite";
-            if(alt.isUnchecked())
+            if (alt.isUnchecked())
                 tags += "\u00a7r, \u00a7cunchecked";
             client.textRenderer.draw(matrixStack, tags, x + 31, y + 15,
                     10526880);

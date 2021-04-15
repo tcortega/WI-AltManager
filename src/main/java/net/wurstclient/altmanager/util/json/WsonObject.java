@@ -45,10 +45,10 @@ public final class WsonObject
     {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
-        for(Map.Entry<String, JsonElement> entry : json.entrySet())
+        for (Map.Entry<String, JsonElement> entry : json.entrySet())
         {
             JsonElement value = entry.getValue();
-            if(!JsonUtils.isString(value))
+            if (!JsonUtils.isString(value))
                 continue;
 
             map.put(entry.getKey(), value.getAsString());
@@ -61,10 +61,10 @@ public final class WsonObject
     {
         LinkedHashMap<String, Number> map = new LinkedHashMap<>();
 
-        for(Map.Entry<String, JsonElement> entry : json.entrySet())
+        for (Map.Entry<String, JsonElement> entry : json.entrySet())
         {
             JsonElement value = entry.getValue();
-            if(!JsonUtils.isNumber(value))
+            if (!JsonUtils.isNumber(value))
                 continue;
 
             map.put(entry.getKey(), value.getAsNumber());
@@ -77,10 +77,10 @@ public final class WsonObject
     {
         LinkedHashMap<String, JsonObject> map = new LinkedHashMap<>();
 
-        for(Map.Entry<String, JsonElement> entry : json.entrySet())
+        for (Map.Entry<String, JsonElement> entry : json.entrySet())
         {
             JsonElement value = entry.getValue();
-            if(!value.isJsonObject())
+            if (!value.isJsonObject())
                 continue;
 
             map.put(entry.getKey(), value.getAsJsonObject());

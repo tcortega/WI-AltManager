@@ -21,15 +21,15 @@ public final class DirectLoginScreen extends AltEditorScreen
     @Override
     protected void pressDoneButton()
     {
-        if(getPassword().isEmpty())
+        if (getPassword().isEmpty())
         {
             message = "";
             LoginManager.changeCrackedName(getEmail());
 
-        }else
+        } else
             message = LoginManager.login(getEmail(), getPassword());
 
-        if(message.isEmpty())
+        if (message.isEmpty())
             client.openScreen(new TitleScreen());
         else
             doErrorEffect();

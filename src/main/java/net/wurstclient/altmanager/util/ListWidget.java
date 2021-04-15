@@ -20,13 +20,13 @@ public abstract class ListWidget extends AbstractParentElement
         implements Drawable
 {
     protected final MinecraftClient client;
+    protected final int itemHeight;
     protected int width;
     protected int height;
     protected int top;
     protected int bottom;
     protected int right;
     protected int left;
-    protected final int itemHeight;
     protected boolean centerListVertically = true;
     protected int yDrag = -2;
     protected double scrollAmount;
@@ -78,26 +78,30 @@ public abstract class ListWidget extends AbstractParentElement
     protected abstract void renderBackground();
 
     protected void updateItemPosition(int index, int x, int y, float delta)
-    {}
+    {
+    }
 
     protected abstract void renderItem(MatrixStack matrixStack, int x, int y,
                                        int itemHeight, int mouseX, int mouseY, int i, float f);
 
     protected void renderHeader(int x, int y, Tessellator tessellator)
-    {}
+    {
+    }
 
     protected void clickedHeader(int i, int j)
-    {}
+    {
+    }
 
     protected void renderDecorations(int mouseX, int mouseY)
-    {}
+    {
+    }
 
     public int getItemAtPosition(double mouseX, double mouseY)
     {
         int i = left + width / 2 - getRowWidth() / 2;
         int j = left + width / 2 + getRowWidth() / 2;
         int k = MathHelper.floor(mouseY - top) - headerHeight
-                + (int)scrollAmount - 4;
+                + (int) scrollAmount - 4;
         int l = k / itemHeight;
         return mouseX < getScrollbarPosition() && mouseX >= i && mouseX <= j
                 && l >= 0 && k >= 0 && l < getItemCount() ? l : -1;
@@ -123,7 +127,7 @@ public abstract class ListWidget extends AbstractParentElement
     public void render(MatrixStack matrices, int mouseX, int mouseY,
                        float delta)
     {
-        if(visible)
+        if (visible)
         {
             renderBackground();
             int i = getScrollbarPosition();
@@ -136,21 +140,21 @@ public abstract class ListWidget extends AbstractParentElement
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
             bufferBuilder.vertex(left, bottom, 0.0D)
-                    .texture(left / 32.0F, (bottom + (int)scrollAmount) / 32.0F)
+                    .texture(left / 32.0F, (bottom + (int) scrollAmount) / 32.0F)
                     .color(32, 32, 32, 255).next();
             bufferBuilder.vertex(right, bottom, 0.0D)
-                    .texture(right / 32.0F, (bottom + (int)scrollAmount) / 32.0F)
+                    .texture(right / 32.0F, (bottom + (int) scrollAmount) / 32.0F)
                     .color(32, 32, 32, 255).next();
             bufferBuilder.vertex(right, top, 0.0D)
-                    .texture(right / 32.0F, (top + (int)scrollAmount) / 32.0F)
+                    .texture(right / 32.0F, (top + (int) scrollAmount) / 32.0F)
                     .color(32, 32, 32, 255).next();
             bufferBuilder.vertex(left, top, 0.0D)
-                    .texture(left / 32.0F, (top + (int)scrollAmount) / 32.0F)
+                    .texture(left / 32.0F, (top + (int) scrollAmount) / 32.0F)
                     .color(32, 32, 32, 255).next();
             tessellator.draw();
             int k = left + width / 2 - getRowWidth() / 2 + 2;
-            int l = top + 4 - (int)scrollAmount;
-            if(renderHeader)
+            int l = top + 4 - (int) scrollAmount;
+            if (renderHeader)
                 renderHeader(k, l, tessellator);
 
             renderList(matrices, k, l, mouseX, mouseY, delta);
@@ -185,13 +189,13 @@ public abstract class ListWidget extends AbstractParentElement
                     .color(0, 0, 0, 0).next();
             tessellator.draw();
             int n = getMaxScroll();
-            if(n > 0)
+            if (n > 0)
             {
-                int o = (int)((float)((bottom - top) * (bottom - top))
-                        / (float)getMaxPosition());
+                int o = (int) ((float) ((bottom - top) * (bottom - top))
+                        / (float) getMaxPosition());
                 o = MathHelper.clamp(o, 32, bottom - top - 8);
-                int p = (int)scrollAmount * (bottom - top - o) / n + top;
-                if(p < top)
+                int p = (int) scrollAmount * (bottom - top - o) / n + top;
+                if (p < top)
                     p = top;
 
                 bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
@@ -245,32 +249,32 @@ public abstract class ListWidget extends AbstractParentElement
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
         updateScrollingState(mouseX, mouseY, button);
-        if(isVisible() && isMouseInList(mouseX, mouseY))
+        if (isVisible() && isMouseInList(mouseX, mouseY))
         {
             int i = getItemAtPosition(mouseX, mouseY);
-            if(i == -1 && button == 0)
+            if (i == -1 && button == 0)
             {
                 clickedHeader(
-                        (int)(mouseX - (left + width / 2 - getRowWidth() / 2)),
-                        (int)(mouseY - top) + (int)scrollAmount - 4);
+                        (int) (mouseX - (left + width / 2 - getRowWidth() / 2)),
+                        (int) (mouseY - top) + (int) scrollAmount - 4);
                 return true;
-            }else if(i != -1 && selectItem(i, button, mouseX, mouseY))
+            } else if (i != -1 && selectItem(i, button, mouseX, mouseY))
             {
-                if(children().size() > i)
+                if (children().size() > i)
                     setFocused(children().get(i));
 
                 setDragging(true);
                 return true;
-            }else
+            } else
                 return scrolling;
-        }else
+        } else
             return false;
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
-        if(getFocused() != null)
+        if (getFocused() != null)
             getFocused().mouseReleased(mouseX, mouseY, button);
 
         return false;
@@ -280,25 +284,25 @@ public abstract class ListWidget extends AbstractParentElement
     public boolean mouseDragged(double mouseX, double mouseY, int button,
                                 double deltaX, double deltaY)
     {
-        if(super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
+        if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
             return true;
-        else if(isVisible() && button == 0 && scrolling)
+        else if (isVisible() && button == 0 && scrolling)
         {
-            if(mouseY < top)
+            if (mouseY < top)
                 scrollAmount = 0.0D;
-            else if(mouseY > bottom)
+            else if (mouseY > bottom)
                 scrollAmount = getMaxScroll();
             else
             {
                 double d = getMaxScroll();
-                if(d < 1.0D)
+                if (d < 1.0D)
                     d = 1.0D;
 
-                int i = (int)((float)((bottom - top) * (bottom - top))
-                        / (float)getMaxPosition());
+                int i = (int) ((float) ((bottom - top) * (bottom - top))
+                        / (float) getMaxPosition());
                 i = MathHelper.clamp(i, 32, bottom - top - 8);
                 double e = d / (bottom - top - i);
-                if(e < 1.0D)
+                if (e < 1.0D)
                     e = 1.0D;
 
                 scrollAmount += deltaY * e;
@@ -306,14 +310,14 @@ public abstract class ListWidget extends AbstractParentElement
             }
 
             return true;
-        }else
+        } else
             return false;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        if(!isVisible())
+        if (!isVisible())
             return false;
         else
         {
@@ -325,24 +329,25 @@ public abstract class ListWidget extends AbstractParentElement
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
-        if(!isVisible())
+        if (!isVisible())
             return false;
-        else if(super.keyPressed(keyCode, scanCode, modifiers))
+        else if (super.keyPressed(keyCode, scanCode, modifiers))
             return true;
-        else if(keyCode == 264)
+        else if (keyCode == 264)
         {
             moveSelection(1);
             return true;
-        }else if(keyCode == 265)
+        } else if (keyCode == 265)
         {
             moveSelection(-1);
             return true;
-        }else
+        } else
             return false;
     }
 
     protected void moveSelection(int by)
-    {}
+    {
+    }
 
     @Override
     public boolean charTyped(char chr, int keyCode)
@@ -368,14 +373,14 @@ public abstract class ListWidget extends AbstractParentElement
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
 
-        for(int n = 0; n < m; ++n)
+        for (int n = 0; n < m; ++n)
         {
             int o = j + n * itemHeight + headerHeight;
             int p = itemHeight - 4;
-            if(o > bottom || o + p < top)
+            if (o > bottom || o + p < top)
                 updateItemPosition(n, i, o, f);
 
-            if(renderSelection && isSelectedItem(n))
+            if (renderSelection && isSelectedItem(n))
             {
                 int q = left + width / 2 - getRowWidth() / 2;
                 int r = left + width / 2 + getRowWidth() / 2;

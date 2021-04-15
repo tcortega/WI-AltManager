@@ -48,7 +48,7 @@ public enum MultiProcessingUtils
             return Paths.get(MultiProcessingUtils.class.getProtectionDomain()
                     .getCodeSource().getLocation().toURI());
 
-        }catch(URISyntaxException e)
+        } catch (URISyntaxException e)
         {
             throw new RuntimeException(e);
         }

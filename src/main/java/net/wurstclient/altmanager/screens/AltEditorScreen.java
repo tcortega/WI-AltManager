@@ -15,6 +15,7 @@ import net.minecraft.util.Util;
 import net.wurstclient.altmanager.WiAltManager;
 import net.wurstclient.altmanager.libs.AltRenderer;
 import net.wurstclient.altmanager.libs.NameGenerator;
+import net.wurstclient.altmanager.util.SkinUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.glfw.GLFW;
@@ -24,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,18 +32,14 @@ import java.nio.file.StandardCopyOption;
 
 public abstract class AltEditorScreen extends Screen
 {
+    protected final Screen prevScreen;
     private final Path skinFolder =
             WiAltManager.INSTANCE.getAltManagerFolder().resolve("skins");
-
-    protected final Screen prevScreen;
-
+    protected String message = "";
     private TextFieldWidget emailBox;
     private TextFieldWidget passwordBox;
-
     private ButtonWidget doneButton;
     private ButtonWidget stealSkinButton;
-
-    protected String message = "";
     private int errorTimer;
 
     public AltEditorScreen(Screen prevScreen, Text title)
@@ -86,7 +82,7 @@ public abstract class AltEditorScreen extends Screen
         passwordBox.setText(getDefaultPassword());
         passwordBox.setRenderTextProvider((text, int_1) -> {
             String stars = "";
-            for(int i = 0; i < text.length(); i++)
+            for (int i = 0; i < text.length(); i++)
                 stars += "*";
             return OrderedText.styledString(stars, Style.EMPTY);
         });
@@ -108,7 +104,7 @@ public abstract class AltEditorScreen extends Screen
         {
             Files.createDirectories(skinFolder);
 
-        }catch(IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
             message = "\u00a74\u00a7lSkin folder could not be created.";
@@ -166,41 +162,25 @@ public abstract class AltEditorScreen extends Screen
 
         try
         {
-            URL url = getSkinUrl(name);
+            URL url = SkinUtils.getSkinUrl(name);
 
-            try(InputStream in = url.openStream())
+            try (InputStream in = url.openStream())
             {
                 Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
             }
 
             return "\u00a7a\u00a7lSaved skin as " + name + ".png";
 
-        }catch(IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
             return "\u00a74\u00a7lSkin could not be saved.";
 
-        }catch(NullPointerException e)
+        } catch (NullPointerException e)
         {
             e.printStackTrace();
             return "\u00a74\u00a7lPlayer does not exist.";
         }
-    }
-
-    /**
-     * Returns the skin download URL for the given username.
-     */
-    public URL getSkinUrl(String username) throws IOException
-    {
-        String uuid = getUUID(username);
-        JsonObject texturesValueJson = getTexturesValue(uuid);
-
-        // Grab URL for skin
-        JsonObject tJObj = texturesValueJson.get("textures").getAsJsonObject();
-        JsonObject skinJObj = tJObj.get("SKIN").getAsJsonObject();
-        String skin = skinJObj.get("url").getAsString();
-
-        return URI.create(skin).toURL();
     }
 
     /**
@@ -263,7 +243,7 @@ public abstract class AltEditorScreen extends Screen
                         "https://sessionserver.mojang.com/session/minecraft/profile/")
                 .resolve(uuid).toURL();
 
-        try(InputStream sessionInputStream = sessionURL.openStream())
+        try (InputStream sessionInputStream = sessionURL.openStream())
         {
             return new Gson().fromJson(
                     IOUtils.toString(sessionInputStream, StandardCharsets.UTF_8),
@@ -271,28 +251,10 @@ public abstract class AltEditorScreen extends Screen
         }
     }
 
-    private String getUUID(String username) throws IOException
-    {
-        URL profileURL =
-                URI.create("https://api.mojang.com/users/profiles/minecraft/")
-                        .resolve(URLEncoder.encode(username, "UTF-8")).toURL();
-
-        try(InputStream profileInputStream = profileURL.openStream())
-        {
-            // {"name":"<username>","id":"<UUID>"}
-
-            JsonObject profileJson = new Gson().fromJson(
-                    IOUtils.toString(profileInputStream, StandardCharsets.UTF_8),
-                    JsonObject.class);
-
-            return profileJson.get("id").getAsString();
-        }
-    }
-
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int int_3)
     {
-        if(keyCode == GLFW.GLFW_KEY_ENTER)
+        if (keyCode == GLFW.GLFW_KEY_ENTER)
             doneButton.onPress();
 
         return super.keyPressed(keyCode, scanCode, int_3);
@@ -304,7 +266,7 @@ public abstract class AltEditorScreen extends Screen
         emailBox.mouseClicked(x, y, button);
         passwordBox.mouseClicked(x, y, button);
 
-        if(emailBox.isFocused() || passwordBox.isFocused())
+        if (emailBox.isFocused() || passwordBox.isFocused())
             message = "";
 
         return super.mouseClicked(x, y, button);
@@ -335,7 +297,7 @@ public abstract class AltEditorScreen extends Screen
         passwordBox.render(matrixStack, mouseX, mouseY, partialTicks);
 
         // red flash for errors
-        if(errorTimer > 0)
+        if (errorTimer > 0)
         {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_CULL_FACE);

@@ -53,7 +53,7 @@ public final class Encryption
             decryptCipher.init(Cipher.DECRYPT_MODE, aesKey,
                     new IvParameterSpec(aesKey.getEncoded()));
 
-        }catch(GeneralSecurityException e)
+        } catch (GeneralSecurityException e)
         {
             throw new CrashException(
                     CrashReport.create(e, "Creating AES ciphers"));
@@ -66,7 +66,7 @@ public final class Encryption
         {
             return decryptCipher.doFinal(Base64.getDecoder().decode(bytes));
 
-        }catch(IllegalArgumentException | GeneralSecurityException e)
+        } catch (IllegalArgumentException | GeneralSecurityException e)
         {
             throw new CrashException(CrashReport.create(e, "Decrypting bytes"));
         }
@@ -78,7 +78,7 @@ public final class Encryption
         {
             return new String(decrypt(Files.readAllBytes(path)), CHARSET);
 
-        }catch(CrashException e)
+        } catch (CrashException e)
         {
             throw new IOException(e);
         }
@@ -86,11 +86,11 @@ public final class Encryption
 
     public JsonElement parseFile(Path path) throws IOException, JsonException
     {
-        try(BufferedReader reader = Files.newBufferedReader(path))
+        try (BufferedReader reader = Files.newBufferedReader(path))
         {
             return JsonUtils.JSON_PARSER.parse(loadEncryptedFile(path));
 
-        }catch(JsonParseException e)
+        } catch (JsonParseException e)
         {
             throw new JsonException(e);
         }
@@ -101,7 +101,7 @@ public final class Encryption
     {
         JsonElement json = parseFile(path);
 
-        if(!json.isJsonArray())
+        if (!json.isJsonArray())
             throw new JsonException();
 
         return new WsonArray(json.getAsJsonArray());
@@ -112,7 +112,7 @@ public final class Encryption
     {
         JsonElement json = parseFile(path);
 
-        if(!json.isJsonObject())
+        if (!json.isJsonObject())
             throw new JsonException();
 
         return new WsonObject(json.getAsJsonObject());
@@ -124,7 +124,7 @@ public final class Encryption
         {
             return Base64.getEncoder().encode(encryptCipher.doFinal(bytes));
 
-        }catch(GeneralSecurityException e)
+        } catch (GeneralSecurityException e)
         {
             throw new CrashException(CrashReport.create(e, "Encrypting bytes"));
         }
@@ -136,7 +136,7 @@ public final class Encryption
         {
             Files.write(path, encrypt(content.getBytes(CHARSET)));
 
-        }catch(CrashException e)
+        } catch (CrashException e)
         {
             throw new IOException(e);
         }
@@ -149,7 +149,7 @@ public final class Encryption
         {
             saveEncryptedFile(path, JsonUtils.PRETTY_GSON.toJson(json));
 
-        }catch(JsonParseException e)
+        } catch (JsonParseException e)
         {
             throw new JsonException(e);
         }
@@ -157,14 +157,14 @@ public final class Encryption
 
     private KeyPair getRsaKeyPair(Path publicFile, Path privateFile)
     {
-        if(Files.notExists(publicFile) || Files.notExists(privateFile))
+        if (Files.notExists(publicFile) || Files.notExists(privateFile))
             return createRsaKeys(publicFile, privateFile);
 
         try
         {
             return loadRsaKeys(publicFile, privateFile);
 
-        }catch(GeneralSecurityException | ReflectiveOperationException
+        } catch (GeneralSecurityException | ReflectiveOperationException
                 | IOException e)
         {
             System.err.println("Couldn't load RSA keypair!");
@@ -176,14 +176,14 @@ public final class Encryption
 
     private SecretKey getAesKey(Path path, KeyPair pair)
     {
-        if(Files.notExists(path))
+        if (Files.notExists(path))
             return createAesKey(path, pair);
 
         try
         {
             return loadAesKey(path, pair);
 
-        }catch(GeneralSecurityException | IOException e)
+        } catch (GeneralSecurityException | IOException e)
         {
             System.err.println("Couldn't load AES key!");
             e.printStackTrace();
@@ -206,8 +206,8 @@ public final class Encryption
             KeyFactory factory = KeyFactory.getInstance("RSA");
 
             // save public key
-            try(ObjectOutputStream out =
-                        new ObjectOutputStream(Files.newOutputStream(publicFile)))
+            try (ObjectOutputStream out =
+                         new ObjectOutputStream(Files.newOutputStream(publicFile)))
             {
                 RSAPublicKeySpec keySpec = factory.getKeySpec(pair.getPublic(),
                         RSAPublicKeySpec.class);
@@ -217,8 +217,8 @@ public final class Encryption
             }
 
             // save private key
-            try(ObjectOutputStream out =
-                        new ObjectOutputStream(Files.newOutputStream(privateFile)))
+            try (ObjectOutputStream out =
+                         new ObjectOutputStream(Files.newOutputStream(privateFile)))
             {
                 RSAPrivateKeySpec keySpec = factory
                         .getKeySpec(pair.getPrivate(), RSAPrivateKeySpec.class);
@@ -229,7 +229,7 @@ public final class Encryption
 
             return pair;
 
-        }catch(GeneralSecurityException | IOException e)
+        } catch (GeneralSecurityException | IOException e)
         {
             throw new CrashException(
                     CrashReport.create(e, "Creating RSA keypair"));
@@ -254,7 +254,7 @@ public final class Encryption
 
             return key;
 
-        }catch(GeneralSecurityException | IOException e)
+        } catch (GeneralSecurityException | IOException e)
         {
             throw new CrashException(CrashReport.create(e, "Creating AES key"));
         }
@@ -268,20 +268,20 @@ public final class Encryption
 
         // load public key
         PublicKey publicKey;
-        try(ObjectInputStream in =
-                    new ObjectInputStream(Files.newInputStream(publicFile)))
+        try (ObjectInputStream in =
+                     new ObjectInputStream(Files.newInputStream(publicFile)))
         {
             publicKey = factory.generatePublic(new RSAPublicKeySpec(
-                    (BigInteger)in.readObject(), (BigInteger)in.readObject()));
+                    (BigInteger) in.readObject(), (BigInteger) in.readObject()));
         }
 
         // load private key
         PrivateKey privateKey;
-        try(ObjectInputStream in =
-                    new ObjectInputStream(Files.newInputStream(privateFile)))
+        try (ObjectInputStream in =
+                     new ObjectInputStream(Files.newInputStream(privateFile)))
         {
             privateKey = factory.generatePrivate(new RSAPrivateKeySpec(
-                    (BigInteger)in.readObject(), (BigInteger)in.readObject()));
+                    (BigInteger) in.readObject(), (BigInteger) in.readObject()));
         }
 
         return new KeyPair(publicKey, privateKey);

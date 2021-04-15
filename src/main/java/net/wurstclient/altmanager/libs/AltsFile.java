@@ -16,8 +16,8 @@ import java.util.Map;
 public final class AltsFile
 {
     private final Path path;
-    private boolean disableSaving;
     private final Encryption encryption;
+    private boolean disableSaving;
 
     public AltsFile(Path path, Path encFolder)
     {
@@ -25,65 +25,11 @@ public final class AltsFile
         encryption = new Encryption(encFolder);
     }
 
-    public void load(AltManager altManager)
-    {
-        try
-        {
-            WsonObject wson = encryption.parseFileToObject(path);
-            loadAlts(wson, altManager);
-
-        }catch(NoSuchFileException e)
-        {
-            // The file doesn't exist yet. No problem, we'll create it later.
-
-        }catch(IOException | JsonException e)
-        {
-            System.out.println("Couldn't load " + path.getFileName());
-            e.printStackTrace();
-
-            renameCorrupted();
-        }
-
-        save(altManager);
-    }
-
-    private void renameCorrupted()
-    {
-        try
-        {
-            Path newPath =
-                    path.resolveSibling("!CORRUPTED_" + path.getFileName());
-            Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("Renamed to " + newPath.getFileName());
-
-        }catch(IOException e2)
-        {
-            System.out.println(
-                    "Couldn't rename corrupted file " + path.getFileName());
-            e2.printStackTrace();
-        }
-    }
-
-    private void loadAlts(WsonObject wson, AltManager altManager)
-    {
-        ArrayList<Alt> alts = parseJson(wson);
-
-        try
-        {
-            disableSaving = true;
-            altManager.addAll(alts);
-
-        }finally
-        {
-            disableSaving = false;
-        }
-    }
-
     public static ArrayList<Alt> parseJson(WsonObject wson)
     {
         ArrayList<Alt> alts = new ArrayList<>();
 
-        for(Map.Entry<String, JsonObject> e : wson.getAllJsonObjects().entrySet())
+        for (Map.Entry<String, JsonObject> e : wson.getAllJsonObjects().entrySet())
         {
             String email = e.getKey();
             JsonObject jsonAlt = e.getValue();
@@ -103,29 +49,11 @@ public final class AltsFile
         return new Alt(email, password, name, starred);
     }
 
-    public void save(AltManager alts)
-    {
-        if(disableSaving)
-            return;
-
-        JsonObject json = createJson(alts);
-
-        try
-        {
-            encryption.toEncryptedJson(json, path);
-
-        }catch(IOException | JsonException e)
-        {
-            System.out.println("Couldn't save " + path.getFileName());
-            e.printStackTrace();
-        }
-    }
-
     public static JsonObject createJson(AltManager alts)
     {
         JsonObject json = new JsonObject();
 
-        for(Alt alt : alts.getList())
+        for (Alt alt : alts.getList())
         {
             JsonObject jsonAlt = new JsonObject();
 
@@ -137,5 +65,77 @@ public final class AltsFile
         }
 
         return json;
+    }
+
+    public void load(AltManager altManager)
+    {
+        try
+        {
+            WsonObject wson = encryption.parseFileToObject(path);
+            loadAlts(wson, altManager);
+
+        } catch (NoSuchFileException e)
+        {
+            // The file doesn't exist yet. No problem, we'll create it later.
+
+        } catch (IOException | JsonException e)
+        {
+            System.out.println("Couldn't load " + path.getFileName());
+            e.printStackTrace();
+
+            renameCorrupted();
+        }
+
+        save(altManager);
+    }
+
+    private void renameCorrupted()
+    {
+        try
+        {
+            Path newPath =
+                    path.resolveSibling("!CORRUPTED_" + path.getFileName());
+            Files.move(path, newPath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Renamed to " + newPath.getFileName());
+
+        } catch (IOException e2)
+        {
+            System.out.println(
+                    "Couldn't rename corrupted file " + path.getFileName());
+            e2.printStackTrace();
+        }
+    }
+
+    private void loadAlts(WsonObject wson, AltManager altManager)
+    {
+        ArrayList<Alt> alts = parseJson(wson);
+
+        try
+        {
+            disableSaving = true;
+            altManager.addAll(alts);
+
+        } finally
+        {
+            disableSaving = false;
+        }
+    }
+
+    public void save(AltManager alts)
+    {
+        if (disableSaving)
+            return;
+
+        JsonObject json = createJson(alts);
+
+        try
+        {
+            encryption.toEncryptedJson(json, path);
+
+        } catch (IOException | JsonException e)
+        {
+            System.out.println("Couldn't save " + path.getFileName());
+            e.printStackTrace();
+        }
     }
 }

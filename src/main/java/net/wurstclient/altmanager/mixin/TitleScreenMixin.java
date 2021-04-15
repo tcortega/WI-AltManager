@@ -30,9 +30,9 @@ public abstract class TitleScreenMixin extends Screen
                 b -> client.openScreen(new AltManagerScreen(this,
                         WiAltManager.INSTANCE.getAltManager()))));
 
-        for(AbstractButtonWidget button : buttons)
+        for (AbstractButtonWidget button : buttons)
         {
-            if(!button.getMessage().getString()
+            if (!button.getMessage().getString()
                     .equals(I18n.translate("menu.online")))
                 continue;
 

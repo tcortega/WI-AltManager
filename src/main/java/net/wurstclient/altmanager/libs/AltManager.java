@@ -22,8 +22,8 @@ public final class AltManager
 
     public boolean contains(String name)
     {
-        for(Alt alt : alts)
-            if(alt.getNameOrEmail().equalsIgnoreCase(name))
+        for (Alt alt : alts)
+            if (alt.getNameOrEmail().equalsIgnoreCase(name))
                 return true;
 
         return false;
@@ -57,7 +57,7 @@ public final class AltManager
     public void setChecked(int index, String name)
     {
         Alt alt = alts.get(index);
-        if(alt.isUnchecked())
+        if (alt.isUnchecked())
             numPremium++;
 
         alt.setChecked(name);
@@ -75,9 +75,9 @@ public final class AltManager
     {
         Alt alt = alts.get(index);
 
-        if(alt.isCracked())
+        if (alt.isCracked())
             numCracked--;
-        else if(!alt.isUnchecked())
+        else if (!alt.isUnchecked())
             numPremium--;
 
         alts.remove(index);
@@ -86,10 +86,10 @@ public final class AltManager
 
     private void remove(Alt alt)
     {
-        if(alts.remove(alt))
-            if(alt.isCracked())
+        if (alts.remove(alt))
+            if (alt.isCracked())
                 numCracked--;
-            else if(!alt.isUnchecked())
+            else if (!alt.isUnchecked())
                 numPremium--;
 
         altsFile.save(this);
@@ -103,8 +103,8 @@ public final class AltManager
         alts.clear();
         alts.addAll(newAlts);
 
-        numCracked = (int)alts.stream().filter(Alt::isCracked).count();
-        numPremium = (int)alts.stream().filter(alt -> !alt.isCracked())
+        numCracked = (int) alts.stream().filter(Alt::isCracked).count();
+        numPremium = (int) alts.stream().filter(alt -> !alt.isCracked())
                 .filter(alt -> !alt.isUnchecked()).count();
     }
 

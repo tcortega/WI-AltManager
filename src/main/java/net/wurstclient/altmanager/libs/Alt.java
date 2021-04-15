@@ -22,7 +22,7 @@ public final class Alt implements Comparable<Alt>
         this.email = Objects.requireNonNull(email);
         this.starred = starred;
 
-        if(password == null || password.isEmpty())
+        if (password == null || password.isEmpty())
         {
             cracked = true;
             unchecked = false;
@@ -30,7 +30,7 @@ public final class Alt implements Comparable<Alt>
             this.name = email;
             this.password = null;
 
-        }else
+        } else
         {
             cracked = false;
             unchecked = name == null || name.isEmpty();
@@ -57,7 +57,7 @@ public final class Alt implements Comparable<Alt>
 
     public String getPassword()
     {
-        if(password == null || password.isEmpty())
+        if (password == null || password.isEmpty())
         {
             cracked = true;
             return "";
@@ -95,10 +95,10 @@ public final class Alt implements Comparable<Alt>
     @Override
     public boolean equals(Object obj)
     {
-        if(!(obj instanceof Alt))
+        if (!(obj instanceof Alt))
             return false;
 
-        Alt other = (Alt)obj;
+        Alt other = (Alt) obj;
 
         return email.equals(other.email) && cracked == other.cracked;
     }

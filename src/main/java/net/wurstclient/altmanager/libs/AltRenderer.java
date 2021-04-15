@@ -3,7 +3,6 @@ package net.wurstclient.altmanager.libs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.texture.PlayerSkinTexture;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,22 +22,24 @@ public final class AltRenderer
     {
         Identifier location = AbstractClientPlayerEntity.getSkinId(name);
 
-        if(loadedSkins.contains(name))
+        if (loadedSkins.contains(name))
         {
             mc.getTextureManager().bindTexture(location);
             return;
         }
+        new Thread(() -> {
+            try
+            {
+                PlayerSkinFetcher img =
+                        PlayerSkinFetcher.Fetch(location, name);
 
-        try
-        {
-            PlayerSkinTexture img =
-                    AbstractClientPlayerEntity.loadSkin(location, name);
-            img.load(mc.getResourceManager());
+                img.load(mc.getResourceManager());
 
-        }catch(IOException e)
-        {
-            e.printStackTrace();
-        }
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }).start();
 
         mc.getTextureManager().bindTexture(location);
         loadedSkins.add(name);
@@ -52,7 +53,7 @@ public final class AltRenderer
             bindSkinTexture(name);
             GL11.glEnable(GL11.GL_BLEND);
 
-            if(selected)
+            if (selected)
                 GL11.glColor4f(1, 1, 1, 1);
             else
                 GL11.glColor4f(0.9F, 0.9F, 0.9F, 1);
@@ -73,7 +74,7 @@ public final class AltRenderer
 
             GL11.glDisable(GL11.GL_BLEND);
 
-        }catch(Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -205,7 +206,7 @@ public final class AltRenderer
 
             GL11.glDisable(GL11.GL_BLEND);
 
-        }catch(Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -337,7 +338,7 @@ public final class AltRenderer
 
             GL11.glDisable(GL11.GL_BLEND);
 
-        }catch(Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
