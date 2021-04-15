@@ -13,12 +13,15 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class AltRenderer
 {
     private static final MinecraftClient mc = WiAltManager.MC;
     private static final HashSet<String> loadedSkins = new HashSet<>();
     private static final HashSet<String> loadingSkins = new HashSet<>();
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private static void bindSkinTexture(String name)
     {
@@ -33,7 +36,7 @@ public final class AltRenderer
         if (loadingSkins.contains(name)) return;
         loadingSkins.add(name);
 
-        new Thread(() -> {
+        executorService.submit(() -> {
             try
             {
                 AbstractTexture img =
@@ -45,7 +48,7 @@ public final class AltRenderer
             {
                 e.printStackTrace();
             }
-        }).start();
+        });
 
         loadingSkins.remove(name);
 
