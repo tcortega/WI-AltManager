@@ -123,7 +123,7 @@ public abstract class AltEditorScreen extends Screen
         doneButton.active =
                 !email.isEmpty() && !(alex && passwordBox.getText().isEmpty());
 
-        stealSkinButton.active = !alex;
+        stealSkinButton.active = !alex && !emailBox.getText().contains("@");
     }
 
     protected final String getEmail()
@@ -279,11 +279,13 @@ public abstract class AltEditorScreen extends Screen
         renderBackground(matrixStack);
 
         // skin preview
-        AltRenderer.drawAltBack(matrixStack, emailBox.getText(),
-                (width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
-        AltRenderer.drawAltBody(matrixStack, emailBox.getText(),
-                width - (width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
-
+        if (!emailBox.getText().contains("@"))
+        {
+            AltRenderer.drawAltBack(matrixStack, emailBox.getText(),
+                    (width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
+            AltRenderer.drawAltBody(matrixStack, emailBox.getText(),
+                    width - (width / 2 - 100) / 2 - 64, height / 2 - 128, 128, 256);
+        }
         // text
         drawStringWithShadow(matrixStack, textRenderer, "Name or E-Mail",
                 width / 2 - 100, 47, 10526880);

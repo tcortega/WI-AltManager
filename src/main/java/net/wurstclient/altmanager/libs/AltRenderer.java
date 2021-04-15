@@ -3,6 +3,7 @@ package net.wurstclient.altmanager.libs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.util.DefaultSkinHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +18,7 @@ public final class AltRenderer
 {
     private static final MinecraftClient mc = WiAltManager.MC;
     private static final HashSet<String> loadedSkins = new HashSet<>();
+    private static final HashSet<String> loadingSkins = new HashSet<>();
 
     private static void bindSkinTexture(String name)
     {
@@ -27,10 +29,14 @@ public final class AltRenderer
             mc.getTextureManager().bindTexture(location);
             return;
         }
+
+        if (loadingSkins.contains(name)) return;
+        loadingSkins.add(name);
+
         new Thread(() -> {
             try
             {
-                PlayerSkinFetcher img =
+                AbstractTexture img =
                         PlayerSkinFetcher.Fetch(location, name);
 
                 img.load(mc.getResourceManager());
@@ -40,6 +46,8 @@ public final class AltRenderer
                 e.printStackTrace();
             }
         }).start();
+
+        loadingSkins.remove(name);
 
         mc.getTextureManager().bindTexture(location);
         loadedSkins.add(name);

@@ -2,9 +2,10 @@ package net.wurstclient.altmanager.libs;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.texture.*;
-import net.minecraft.client.util.DefaultSkinHelper;
+import net.minecraft.client.texture.AbstractTexture;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.texture.TextureUtil;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -23,7 +24,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.CompletableFuture;
 
-public class PlayerSkinFetcher extends ResourceTexture
+public class PlayerSkinFetcher extends AbstractTexture
 {
     private static final MinecraftClient mc = WiAltManager.MC;
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,7 +39,7 @@ public class PlayerSkinFetcher extends ResourceTexture
 
     public PlayerSkinFetcher(@Nullable File cacheFile, String username, boolean convertLegacy, @Nullable Runnable callback) throws IOException
     {
-        super(DefaultSkinHelper.getTexture(AbstractClientPlayerEntity.getOfflinePlayerUuid(username)));
+        super();
         this.cacheFile = cacheFile;
         this.convertLegacy = convertLegacy;
         this.loadedCallback = callback;
@@ -52,17 +53,17 @@ public class PlayerSkinFetcher extends ResourceTexture
         this.url = tempUrl.toString();
     }
 
-    public static PlayerSkinFetcher Fetch(Identifier id, String username) throws IOException
+    public static AbstractTexture Fetch(Identifier id, String username) throws IOException
     {
         TextureManager textureManager = mc.getTextureManager();
-        AbstractTexture abstractTexture = textureManager.getTexture(id);
-        if (abstractTexture == null)
-        {
-            abstractTexture = new PlayerSkinFetcher((File) null, username, true, (Runnable) null);
-            textureManager.registerTexture(id, (AbstractTexture) abstractTexture);
-        }
+//        AbstractTexture abstractTexture = textureManager.getTexture(id);
+//        if (abstractTexture == null)
+//        {
+            AbstractTexture abstractTexture = new PlayerSkinFetcher((File) null, username, true, (Runnable) null);
+            textureManager.registerTexture(id, abstractTexture);
+//        }
 
-        return (PlayerSkinFetcher) abstractTexture;
+        return abstractTexture;
     }
 
     private static NativeImage remapTexture(NativeImage image)
